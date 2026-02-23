@@ -1,23 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/lib/auth-options';
 import { prisma } from '@/lib/prisma';
 
 // GET - Retrieve message history for a room
 export async function GET(
   request: NextRequest,
-  { params }: { params: { roomId: string } }
+  context: { params: Promise<{ roomId: string }> }
 ) {
   try {
+    const { roomId } = await context.params;
+
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       console.log('[Chat API] No valid session found');
       return NextResponse.json({ error: 'Unauthorized - Please log in' }, { status: 401 });
     }
     
-    console.log(`[Chat API] Loading messages for room ${params.roomId} for user ${session.user.id}`);
-
-    const { roomId } = params;
+    console.log(`[Chat API] Loading messages for room ${roomId} for user ${session.user.id}`);
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '50');
     const before = searchParams.get('before'); // For pagination
@@ -109,15 +109,16 @@ export async function GET(
 // POST - Store a new message
 export async function POST(
   request: NextRequest,
-  { params }: { params: { roomId: string } }
+  context: { params: Promise<{ roomId: string }> }
 ) {
   try {
+    const { roomId } = await context.params;
+
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { roomId } = params;
     const body = await request.json();
     const { message, format, type = 'TEXT' } = body;
 

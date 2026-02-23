@@ -23,10 +23,10 @@ interface UpdateDJBody {
 
 export async function GET(
   request: NextRequest,
-  context: { params: { djId: string } }
+  context: { params: Promise<{ djId: string }> }
 ) {
   try {
-    const { djId } = context.params;
+    const { djId } = await context.params;
     console.log('Attempting to fetch DJ with ID:', djId);
 
     if (!isValidId(djId)) {
@@ -133,11 +133,11 @@ export async function GET(
 }
 
 export async function PATCH(
-  request: Request,
-  context: { params: { djId: string } }
+  request: NextRequest,
+  context: { params: Promise<{ djId: string }> }
 ) {
   try {
-    const { djId } = context.params;
+    const { djId } = await context.params;
     if (!isValidId(djId)) {
       return NextResponse.json(
         { error: 'Invalid DJ ID provided' },
