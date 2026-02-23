@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/lib/auth-options';
 import { prisma } from '@/lib/prisma';
 
 // POST - Add or remove a reaction
 export async function POST(
   request: NextRequest,
-  { params }: { params: { roomId: string } }
+  context: { params: Promise<{ roomId: string }> }
 ) {
   try {
+    const { roomId } = await context.params;
+
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -28,7 +30,7 @@ export async function POST(
     const message = await prisma.chatMessage.findFirst({
       where: {
         id: messageId,
-        roomId: params.roomId,
+        roomId,
       }
     });
 

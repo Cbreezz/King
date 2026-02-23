@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { djId: string } }
+  context: { params: Promise<{ djId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -13,7 +13,7 @@ export async function GET(
       return NextResponse.json({ rating: null });
     }
 
-    const { djId } = params;
+    const { djId } = await context.params;
 
     const userRating = await prisma.djRating.findUnique({
       where: {
@@ -36,7 +36,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { djId: string } }
+  context: { params: Promise<{ djId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -44,7 +44,7 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { djId } = params;
+    const { djId } = await context.params;
     const { rating } = await request.json();
 
     // Validate rating

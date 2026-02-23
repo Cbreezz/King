@@ -5,13 +5,14 @@ import { authOptions } from '@/app/lib/auth-options';
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
+  const { id: paramId } = await params;
 
   // Check if user is authenticated and can only delete their own profile
-  if (!userId || userId !== params.id) {
+  if (!userId || userId !== paramId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

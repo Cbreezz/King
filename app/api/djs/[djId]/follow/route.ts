@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { djId: string } }
+  context: { params: Promise<{ djId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -13,7 +13,7 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { djId } = params;
+    const { djId } = await context.params;
 
     // Check if DJ exists
     const dj = await prisma.dj.findUnique({
@@ -75,7 +75,7 @@ export async function POST(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { djId: string } }
+  context: { params: Promise<{ djId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -83,7 +83,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { djId } = params;
+    const { djId } = await context.params;
 
     // Remove the follow relationship
     const deleted = await prisma.fanFollowing.deleteMany({

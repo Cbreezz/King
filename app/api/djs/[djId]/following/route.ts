@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { djId: string } }
+  context: { params: Promise<{ djId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -13,7 +13,7 @@ export async function GET(
       return NextResponse.json({ isFollowing: false });
     }
 
-    const { djId } = params;
+    const { djId } = await context.params;
 
     const following = await prisma.fanFollowing.findUnique({
       where: {

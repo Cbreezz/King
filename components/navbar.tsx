@@ -59,11 +59,16 @@ export function Navbar() {
     { href: '/clubs', label: 'Clubs' },
     { href: '/leaderboard', label: 'Leaderboard' },
     { href: '/moments', label: 'Moments' },
+    { href: '/events', label: 'Events' },
   ];
 
   const authLinks = [
     { href: '/profile', label: 'Profile' },
-    ...(user?.role === 'DJ' ? [{ href: '/dj/dashboard', label: 'DJ Dashboard' }] : [{ href: '/dashboard', label: 'Dashboard' }]),
+    ...(user?.role === 'DJ'
+      ? [{ href: '/dj/dashboard', label: 'DJ Dashboard' }]
+      : user?.role === 'CLUB_OWNER'
+        ? [{ href: '/clubs/manage', label: 'Club Dashboard' }]
+        : [{ href: '/dashboard', label: 'Dashboard' }]),
     { href: '/settings', label: 'Settings' },
   ];
 

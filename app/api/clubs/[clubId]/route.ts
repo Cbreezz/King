@@ -5,10 +5,10 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { clubId: string } }
+  context: { params: Promise<{ clubId: string }> }
 ) {
   try {
-    const { clubId } = params;
+    const { clubId } = await context.params;
 
     const club = await prisma.club.findUnique({
       where: { id: clubId },

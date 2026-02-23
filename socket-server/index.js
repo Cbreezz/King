@@ -326,7 +326,21 @@ io.on('connection', (socket) => {
       if (callback) callback({ error: 'Failed to broadcast message' });
     }
   });
-    // Handle typing indicators
+
+  // Handle stream reactions (likes/comments) for live sessions
+  socket.on('stream:like', ({ djId }) => {
+    if (!djId) return;
+    console.log(`[Socket.IO] Stream like for DJ ${djId} from user ${userId}`);
+    io.emit(`stream:${djId}:like`);
+  });
+
+  socket.on('stream:comment', ({ djId, comment }) => {
+    if (!djId || !comment) return;
+    console.log(`[Socket.IO] Stream comment for DJ ${djId} from user ${userId}:`, comment.text);
+    io.emit(`stream:${djId}:comment`, comment);
+  });
+
+  // Handle typing indicators
   socket.on('typing_start', (data) => {
     const roomId = data.roomId;
     if (!roomId) return;
@@ -355,6 +369,37 @@ io.on('connection', (socket) => {
     });
   });
   
+  // Handle reactions on messages
+  socket.on('add_reaction', (data) => {
+    const { roomId, messageId, emoji, userId: reactingUserId } = data || {};
+    if (!roomId || !messageId || !emoji || !reactingUserId) return;
+
+    console.log(
+      `[Socket.IO] Reaction added in room ${roomId} on message ${messageId} by ${reactingUserId}: ${emoji}`
+    );
+
+    io.to(roomId).emit('reaction_added', {
+      messageId,
+      emoji,
+      userId: reactingUserId,
+    });
+  });
+
+  socket.on('remove_reaction', (data) => {
+    const { roomId, messageId, emoji, userId: reactingUserId } = data || {};
+    if (!roomId || !messageId || !emoji || !reactingUserId) return;
+
+    console.log(
+      `[Socket.IO] Reaction removed in room ${roomId} on message ${messageId} by ${reactingUserId}: ${emoji}`
+    );
+
+    io.to(roomId).emit('reaction_removed', {
+      messageId,
+      emoji,
+      userId: reactingUserId,
+    });
+  });
+
   // Handle user leaving
   socket.on('leave_room', (roomId) => {
     if (!roomId) return;
