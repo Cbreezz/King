@@ -34,7 +34,12 @@ const joinChannel = async (
   uid: string | number,
   token: string
 ) => {
-  const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID!;
+  const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID;
+  if (!appId) {
+    throw new Error(
+      'Missing NEXT_PUBLIC_AGORA_APP_ID. Please set it in your environment.'
+    );
+  }
   await client.join(appId, channelName, token, uid);
   return true;
 };
@@ -145,12 +150,20 @@ export function AgoraStream({
     try {
       const res = await fetch(url);
       const data = await res.json();
+
+      if (!res.ok) {
+        console.error('[Agora] Token error:', data?.error);
+        setDebugInfo(data);
+        throw new Error(data.error || 'Token error');
+      }
+
       setDebugInfo(data.debug);
-      if (!res.ok) throw new Error(data.error || 'Token error');
       return data.token;
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to fetch Agora token');
+    } catch (err: any) {
+      console.error('[Agora] Failed to fetch token:', err);
+      const message =
+        typeof err?.message === 'string' ? err.message : 'Failed to fetch Agora token';
+      toast.error(message);
       throw err;
     }
   }
@@ -161,6 +174,7 @@ export function AgoraStream({
 
     try {
       setIsLoading(true);
+
       const [audioTrack, videoTrack] = await createLocalTracks();
       tracksRef.current = { audioTrack, videoTrack };
 
@@ -171,6 +185,7 @@ export function AgoraStream({
         ? parsedUserId
         : Math.floor(Math.random() * 10_000_000);
       const role = isHost ? 'host' : 'audience';
+
       const token = await fetchAgoraToken(channelName, uid, role);
       await joinChannel(clientRef.current, channelName, uid, token);
 
@@ -203,8 +218,27 @@ export function AgoraStream({
       setIsStreaming(true);
       onStreamStarted?.();
       toast.success(isHost ? 'Stream started!' : 'Joined stream!');
-    } catch (err) {
-      toast.error('Error starting stream');
+    } catch (err: any) {
+      console.error('[Agora] Error starting stream:', err);
+
+      // Clean up any created tracks if we failed after creating them
+      if (tracksRef.current.audioTrack) {
+        tracksRef.current.audioTrack.close();
+      }
+      if (tracksRef.current.videoTrack) {
+        tracksRef.current.videoTrack.close();
+      }
+      tracksRef.current = {};
+
+      try {
+        await clientRef.current?.leave();
+      } catch {}
+
+      const message =
+        typeof err?.message === 'string'
+          ? err.message
+          : 'Error starting stream. Please check camera/mic permissions and try again.';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -217,15 +251,17 @@ export function AgoraStream({
     try {
       setIsLoading(true);
 
-      if (isHost) {
+      if (isHost && tracksRef.current.audioTrack && tracksRef.current.videoTrack) {
         await clientRef.current.unpublish([
-          tracksRef.current.audioTrack!,
-          tracksRef.current.videoTrack!,
+          tracksRef.current.audioTrack,
+          tracksRef.current.videoTrack,
         ]);
       }
 
       tracksRef.current.audioTrack?.close();
       tracksRef.current.videoTrack?.close();
+      tracksRef.current = {};
+
       await clientRef.current.leave();
 
       setIsStreaming(false);
@@ -262,7 +298,7 @@ export function AgoraStream({
 
   return (
     <div className="space-y-4">
-      {debugInfo && (
+      {process.env.NODE_ENV === 'development' && debugInfo && (
         <div className="bg-gray-100 p-4 rounded-lg text-sm">
           <h3 className="font-semibold mb-2">Debug Info:</h3>
           <pre className="text-xs">{JSON.stringify(debugInfo, null, 2)}</pre>

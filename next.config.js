@@ -1,15 +1,4 @@
-/** @type {import('next').NextConfig} */
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development'
-});
-
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   output: 'standalone',
   images: { unoptimized: true },
   env: {
@@ -17,10 +6,7 @@ const nextConfig = {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build',
     DATABASE_URL: process.env.DATABASE_URL || 'postgresql://user:password@localhost:5432/db',
   },
-  // Make sure all environment variables are available during the build
-  experimental: {
-    serverComponentsExternalPackages: ['bcryptjs'],
-  },
+  serverExternalPackages: ['bcryptjs'],
   webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -38,4 +24,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withPWA(nextConfig);
+module.exports = nextConfig;

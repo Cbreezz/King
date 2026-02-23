@@ -59,6 +59,7 @@ export function Navbar() {
     { href: '/clubs', label: 'Clubs' },
     { href: '/leaderboard', label: 'Leaderboard' },
     { href: '/moments', label: 'Moments' },
+    { href: '/events', label: 'Events' },
   ];
 
   const authLinks = [
