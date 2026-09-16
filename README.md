@@ -1,123 +1,187 @@
-# NightVibe - Ultimate Nightlife Social Experience
+# NightVibe
 
-NightVibe is a social platform connecting DJs, clubs, and nightlife enthusiasts. The application allows users to discover DJs, clubs, attend events, and share their nightlife experiences.
+NightVibe is a nightlife discovery and community platform for people who want to find what is happening, follow the DJs and venues they care about, and participate in the energy of an event beyond the dance floor.
 
-## Features
+The product brings nightlife fans, DJs, and clubs into one experience: discover DJs and venues, explore live events, share moments, join event conversations, and build a reputation within the community.
 
-- **DJ Profiles**: Discover and follow popular DJs
-- **Club Listings**: Find the best clubs and their upcoming events
-- **Live Chat**: Chat with DJs and other fans during events
-- **Moments**: Share your nightlife experiences with the community
-- **Leaderboard**: See top-rated DJs and clubs
-- **Responsive Design**: Fully responsive for mobile and desktop
+> **Project status:** NightVibe is an active MVP/prototype. The core product surfaces and API foundations are in place, while production hardening, live-data coverage, and some realtime flows are still being validated.
 
-## Tech Stack
+## What NightVibe is building
 
-- **Frontend**: Next.js, React, TypeScript, Tailwind CSS, Shadcn UI
-- **Backend**: Next.js API routes
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: NextAuth.js
-- **Real-time Communication**: Socket.IO
+Nightlife discovery is often fragmented across social feeds, venue pages, event listings, and private group chats. NightVibe is designed to make that journey more connected:
 
-## Getting Started
+1. **Discover** DJs, clubs, and nightlife activity.
+2. **Decide** where to go and who to follow.
+3. **Participate** through live chat, reactions, and realtime event presence.
+4. **Share** moments from the night.
+5. **Return** to a personalized community built around nightlife.
+
+## Current product areas
+
+- **DJ discovery and profiles** — Browse DJs, view profiles, follow them, and rate them.
+- **Club discovery and profiles** — Explore clubs, club details, imagery, and related nightlife activity.
+- **Moments** — Share nightlife photos and posts, with support for uploads and likes.
+- **Live chat** — Join room-based conversations with other fans during events, including reactions.
+- **Live DJ experiences** — Dedicated live routes support realtime DJ-focused interactions and Agora-powered audio/video capabilities where configured.
+- **Leaderboards and stats** — Surface community rankings and activity across DJs and clubs.
+- **Accounts and profiles** — Sign up, log in, verify email, recover passwords, manage profiles, and change passwords.
+- **Role-aware experiences** — Separate fan and DJ dashboard surfaces support the different needs of the community.
+- **Responsive experience** — Designed for mobile-first nightlife use while supporting desktop layouts, with PWA support in the project foundation.
+
+## Tech stack
+
+- **Application:** Next.js, React, TypeScript
+- **UI:** Tailwind CSS, shadcn/ui patterns, Radix UI, Lucide icons
+- **Data:** PostgreSQL with Prisma ORM
+- **Authentication:** NextAuth.js with Prisma adapter
+- **Realtime:** Socket.IO, with a separate Node.js socket server
+- **Live media:** Agora Web SDK and Agora access tokens
+- **Media storage:** Vercel Blob for supported uploads
+- **Validation and forms:** Zod and React Hook Form
+- **Deployment target:** Vercel for the web application; the socket server can run as a separate service
+
+## Repository structure
+
+```text
+app/                  Next.js routes, pages, layouts, and API handlers
+components/           Shared UI components
+lib/                  Shared application utilities and services
+prisma/               Database schema, migrations, seed, and reset scripts
+socket-server/        Standalone Socket.IO server
+public/               Static assets
+scripts/              Project utilities
+```
+
+## Getting started
 
 ### Prerequisites
 
-- Node.js (v18 or later)
-- PostgreSQL database
-- npm or yarn
+- Node.js 18 or later
+- npm
+- PostgreSQL
+- Credentials for the services you plan to use locally (NextAuth, Agora, Blob, and Socket.IO as applicable)
 
-### Installation
+### Install
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/nightvibe.git
-   cd nightvibe
-   ```
+```bash
+git clone https://github.com/Cbreezz/King.git
+cd King
+npm install
+```
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+### Configure environment variables
 
-3. Set up environment variables:
-   - Copy `.env.example` to `.env`
-   - Update the variables with your own values
+Copy the example file and fill in the values for your environment:
 
-4. Set up the database:
-   ```bash
-   npx prisma migrate dev
-   npm run seed
-   ```
+```bash
+cp .env.example .env.local
+```
 
-5. Start the development server:
-   ```bash
-   npm run dev
-   ```
+The application may use the following variables depending on the features you are running:
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+```text
+DATABASE_URL
+NEXTAUTH_SECRET
+NEXTAUTH_URL
+NEXT_PUBLIC_SITE_URL
+NEXT_PUBLIC_SOCKET_SERVER
+NEXT_PUBLIC_AGORA_APP_ID
+AGORA_APP_CERTIFICATE
+BLOB_READ_WRITE_TOKEN
+GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET
+```
 
-## Database Management
+Do not commit real secrets. Some local setups may use additional environment files for email or testing; keep those values private as well.
 
-- **Reset Database**: `npm run reset-db`
-- **Prisma Studio**: `npx prisma studio`
+### Prepare the database
 
-## Deployment
+Generate the Prisma client and apply the existing migrations:
 
-### Vercel Deployment
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
 
-1. Push your code to GitHub.
+To load development seed data:
 
-2. Connect your repository to Vercel:
-   - Create a new project in Vercel
-   - Select your GitHub repository
-   - Configure the following settings:
-     - Build Command: `npm run build`
-     - Output Directory: `.next`
-     - Install Command: `npm install`
+```bash
+npm run seed
+```
 
-3. Configure Environment Variables in Vercel:
-   - Go to the project settings
-   - Add all the environment variables from `.env.example`
-   - Ensure the `NEXT_PUBLIC_APP_URL` matches your Vercel deployment URL
-   - Set `NEXT_PUBLIC_SOCKET_SERVER` to your Socket.IO server URL (e.g., on Render)
+To reset the development database and reseed it:
 
-4. Deploy:
-   - Trigger a new deployment by pushing to your repository
-   - Vercel will automatically build and deploy your application
+```bash
+npm run reset-db
+```
 
-### Socket.IO Server Deployment (Render)
+### Run the web app
 
-The Socket.IO server is deployed separately on Render:
+```bash
+npm run dev
+```
 
-1. Push your code to GitHub.
+Open [http://localhost:3000](http://localhost:3000).
 
-2. Create a new Web Service in Render:
-   - Connect to your GitHub repository
-   - Configure the following settings:
-     - Build Command: `cd socket-server && npm install`
-     - Start Command: `cd socket-server && npm start`
-   - Add the following environment variables:
-     - `NODE_ENV`: `production`
-     - `NEXT_PUBLIC_APP_URL`: Your Vercel deployment URL
+### Run realtime features
 
-3. Deploy and note the Render URL.
+The Socket.IO server runs separately on port 3001 by default:
 
-4. Update your Vercel environment variables:
-   - Set `NEXT_PUBLIC_SOCKET_SERVER` to the Render URL
+```bash
+npm run socket
+```
+
+For the web app and socket server together:
+
+```bash
+npm run dev:all
+```
+
+Set `NEXT_PUBLIC_SOCKET_SERVER` to the socket server URL when using chat or realtime features. If the socket server is deployed separately, update that value in the web app environment after deployment.
+
+## Useful commands
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the Next.js development server |
+| `npm run socket` | Start the Socket.IO server |
+| `npm run dev:all` | Start the web app and Socket.IO together |
+| `npm run build` | Create a production build |
+| `npm run start` | Start the production build |
+| `npm run lint` | Run the configured lint command |
+| `npm run seed` | Seed the development database |
+| `npm run reset-db` | Reset the development database |
+| `npx prisma studio` | Inspect database records locally |
+
+## Architecture notes
+
+NightVibe uses Next.js pages and API route handlers as the web and application layer. Prisma provides the PostgreSQL data access layer for users, DJs, clubs, moments, follows, ratings, and related product data. Realtime chat and presence are handled by Socket.IO outside the Next.js process, while Agora token generation is kept server-side for live media flows.
+
+The codebase currently contains both product routes and supporting health/test routes for validating the web, database, socket, and live-media foundations. Availability of live data depends on the configured database and service credentials.
+
+## Roadmap
+
+The next highest-value work is focused on making the MVP dependable for a first real audience:
+
+- Improve authentication, verification, and protected-route reliability.
+- Make discovery consistently populated with trustworthy DJ, club, and event data.
+- Harden Socket.IO connection, reconnection, room, and deployment behavior.
+- Validate Agora live-session flows and failure states end to end.
+- Improve accessibility, keyboard navigation, loading states, and mobile polish.
+- Add automated coverage for the most important user journeys.
+- Tighten validation, authorization, media handling, observability, and production security.
 
 ## Contributing
 
-1. Create a feature branch (`git checkout -b feature/amazing-feature`)
-2. Commit your changes (`git commit -m 'Add some amazing feature'`)
-3. Push to the branch (`git push origin feature/amazing-feature`)
-4. Open a Pull Request
+1. Create a feature branch from `master`.
+2. Make a focused change and verify the relevant user flow.
+3. Run the available checks before opening a pull request.
+4. Describe the product impact and any environment setup required.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License. See the `LICENSE` file when available.
 
-## Acknowledgments
+## Vision
 
-- Built with ❤️ for the nightlife community
-- UI design inspired by modern nightlife aesthetics
+NightVibe is being built to help people experience nightlife as a living community: discover the right night, connect with the people shaping it, and keep the memory going after the music stops.
