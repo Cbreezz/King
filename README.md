@@ -178,9 +178,6 @@ The next highest-value work is focused on making the MVP dependable for a first 
 3. Run the available checks before opening a pull request.
 4. Describe the product impact and any environment setup required.
 
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file when available.
 
 ## Vision
 
