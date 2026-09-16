@@ -46,10 +46,10 @@ export function Footer() {
           <div>
             <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-neon-cyan">Support</h3>
             <ul className="space-y-1 sm:space-y-2">
-              <li><a href="#" className="text-sm sm:text-base text-app-text/70 hover:text-neon-cyan transition-colors">Help Center</a></li>
-              <li><a href="#" className="text-sm sm:text-base text-app-text/70 hover:text-neon-cyan transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-sm sm:text-base text-app-text/70 hover:text-neon-cyan transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="text-sm sm:text-base text-app-text/70 hover:text-neon-cyan transition-colors">Contact Us</a></li>
+              <li><Link href="/help/account" className="text-sm sm:text-base text-app-text/70 hover:text-neon-cyan transition-colors">Help Center</Link></li>
+              <li><Link href="/privacy" className="text-sm sm:text-base text-app-text/70 hover:text-neon-cyan transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-sm sm:text-base text-app-text/70 hover:text-neon-cyan transition-colors">Terms of Service</Link></li>
+              <li><Link href="/contact" className="text-sm sm:text-base text-app-text/70 hover:text-neon-cyan transition-colors">Contact Us</Link></li>
             </ul>
           </div>
         </div>

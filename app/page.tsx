@@ -45,16 +45,22 @@ export default function Home() {
   const [topClubs, setTopClubs] = useState<Club[]>([]);
   const [stats, setStats] = useState({ djCount: 0, clubCount: 0, momentCount: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const { isDjLive, liveRooms } = useSocket();
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
+      setHasError(false);
       const [djsResponse, clubsResponse, statsResponse] = await Promise.all([
         fetch('/api/djs'),
         fetch('/api/clubs'),
         fetch('/api/stats')
       ]);
+
+      if (!djsResponse.ok || !clubsResponse.ok || !statsResponse.ok) {
+        throw new Error('Unable to load NightVibe data');
+      }
 
       const [djsData, clubsData, statsData] = await Promise.all([
         djsResponse.json(),
@@ -76,6 +82,7 @@ export default function Home() {
       setStats(statsData);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setHasError(true);
     } finally {
       setIsLoading(false);
     }
@@ -197,7 +204,9 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              topDJs.map((dj) => (
+              topDJs.length === 0 ? (
+                <div className="glass-card p-6 text-center text-app-text/70 md:col-span-3">No DJs have joined yet. Check back soon.</div>
+              ) : topDJs.map((dj) => (
                 <DJCard 
                   key={dj.id} 
                   {...dj} 
@@ -232,7 +241,9 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              topClubs.map((club) => (
+              topClubs.length === 0 ? (
+                <div className="glass-card p-6 text-center text-app-text/70 md:col-span-3">No venues are available yet. Check back soon.</div>
+              ) : topClubs.map((club) => (
                 <ClubCard key={club.id} {...club} />
               ))
             )}

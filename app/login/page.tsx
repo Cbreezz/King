@@ -61,17 +61,6 @@ export default function LoginPage() {
     }
   };
 
-  // Show loading during authentication check
-  if (auth.status === 'loading') {
-    return (
-      <div className="min-h-screen bg-app-bg flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="animate-pulse">Loading...</div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-app-bg flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/5 via-transparent to-electric-pink/5"></div>

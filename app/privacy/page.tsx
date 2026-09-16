@@ -1,0 +1,3 @@
+import Link from "next/link";
+export const metadata = { title: "Privacy Policy | NightVibe", description: "NightVibe privacy policy." };
+export default function PrivacyPage() { return <main className="min-h-screen bg-app-bg px-6 py-24 text-app-text"><div className="mx-auto max-w-3xl"><Link href="/" className="text-neon-cyan">← Back home</Link><h1 className="mt-8 text-4xl font-bold">Privacy Policy</h1><p className="mt-4 text-app-text/70">NightVibe uses account and activity information to provide profiles, live sessions, and community features. We do not sell personal information. Contact us to request access, correction, or deletion of your data.</p><p className="mt-6 text-sm text-app-text/50">Last updated September 2026</p></div></main>; }

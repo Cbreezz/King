@@ -31,12 +31,14 @@ export default function DJsPage() {
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [showOnlyLive, setShowOnlyLive] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const [allDJs, setAllDJs] = useState<DJ[]>([]);
   const { isDjLive, liveRooms } = useSocket();
 
   const fetchDJs = async () => {
     try {
       setIsLoading(true);
+      setHasError(false);
       const response = await fetch('/api/djs');
       if (!response.ok) {
         throw new Error('Failed to fetch DJs');
@@ -45,6 +47,7 @@ export default function DJsPage() {
       setAllDJs(data);
     } catch (error) {
       console.error('Error fetching DJs:', error);
+      setHasError(true);
     } finally {
       setIsLoading(false);
     }
@@ -156,7 +159,12 @@ export default function DJsPage() {
             </div>
           </div>
 
-          {isLoading ? (
+          {hasError ? (
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-6 text-center">
+              <p className="mb-4">We couldn&apos;t reach the DJ directory. The API may be unavailable.</p>
+              <Button variant="outline" onClick={fetchDJs}>Retry</Button>
+            </div>
+          ) : isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="animate-pulse">
