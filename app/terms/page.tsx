@@ -1,0 +1,3 @@
+import Link from "next/link";
+export const metadata = { title: "Terms of Service | NightVibe", description: "NightVibe terms of service." };
+export default function TermsPage() { return <main className="min-h-screen bg-app-bg px-6 py-24 text-app-text"><div className="mx-auto max-w-3xl"><Link href="/" className="text-neon-cyan">← Back home</Link><h1 className="mt-8 text-4xl font-bold">Terms of Service</h1><p className="mt-4 text-app-text/70">Use NightVibe respectfully and only for lawful activity. You are responsible for your account and content. We may remove content or suspend accounts that harm the community or violate these terms.</p><p className="mt-6 text-sm text-app-text/50">Last updated September 2026</p></div></main>; }

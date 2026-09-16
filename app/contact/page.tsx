@@ -1,0 +1,3 @@
+import Link from "next/link";
+export const metadata = { title: "Contact | NightVibe", description: "Contact the NightVibe team." };
+export default function ContactPage() { return <main className="min-h-screen bg-app-bg px-6 py-24 text-app-text"><div className="mx-auto max-w-2xl"><Link href="/" className="text-neon-cyan">← Back home</Link><h1 className="mt-8 text-4xl font-bold">Contact us</h1><p className="mt-4 text-app-text/70">Questions, feedback, or a safety concern? Email <a className="text-neon-cyan underline" href="mailto:support@nightvibe.app">support@nightvibe.app</a> with the details and we&apos;ll get back to you.</p></div></main>; }
