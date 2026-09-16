@@ -4,7 +4,7 @@ NightVibe is a nightlife discovery and community platform for people who want to
 
 The product brings nightlife fans, DJs, and clubs into one experience: discover DJs and venues, explore live events, share moments, join event conversations, and build a reputation within the community.
 
-> **Project status:** NightVibe is an active MVP/prototype. The core product surfaces and API foundations are in place, while production hardening, live-data coverage, and some realtime flows are still being validated.
+> **Project status:** NightVibe is an actively maintained, continuing project. This is an evolving MVP/prototype: the core product surfaces and API foundations are in place, while production hardening, live-data coverage, and some realtime flows are still being built and validated. New features, improvements, and fixes are ongoing.
 
 ## What NightVibe is building
 
